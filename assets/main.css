@@ -1,0 +1,38 @@
+body, html {
+	margin: 0;
+	padding: 0;
+	cursor: none;
+}
+
+#cursor-text {
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	color: #D4263B;
+	font-weight: bolder;
+	font-family: Helvetica, sans-serif;
+	font-style: oblique;
+}
+
+#banner-container {
+	margin: 0 auto;
+	height: 100%;
+	text-align: center;
+}
+
+#banner-container p {
+	font-weight: bolder;
+	font-family: Helvetica, sans-serif;
+	font-style: oblique;
+	font-size: 110%;
+}
+
+#banner-container span {
+	cursor: pointer;
+}
+
+#banner-container img {
+	width: 35%;
+	margin-top: 5%;
+	margin-bottom: 2%;
+}
