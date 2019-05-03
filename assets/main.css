@@ -29,10 +29,23 @@ body, html {
 
 #banner-container span {
 	cursor: pointer;
+	opacity: 0.7;
+	padding: 2%;
+
+	-webkit-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	-ms-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	transition: all .3s ease;
+}
+
+#banner-container span:hover {
+	opacity: 1;
 }
 
 #banner-container img {
 	width: 35%;
 	margin-top: 5%;
 	margin-bottom: 2%;
+	image-orientation: flip;
 }
