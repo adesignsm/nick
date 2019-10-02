@@ -1,6 +1,6 @@
 <?php
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         $name = strip_tags(trim($_POST["name"]));
 		$name = str_replace(array("\r","\n"),array(" "," "),$name);
