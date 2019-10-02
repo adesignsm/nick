@@ -1,105 +1,163 @@
-var cursorText = $("#cursor-text");
-var cursorPlaceHolder = "Project 1";
-var cursorTextPos = cursorText.position();
+var clientX = -100;
+var clientY = -100;
 
-var projectsCounter = 0;
+var lastX = 0;
+var lastY = 0;
+var isStuck = false;
+var showCursor = false;
+var group, stuckX, stuckY, fillOuterCursor;
 
-function getPos(e) {
+const innerCursor = document.querySelector(".cursor-small");
 
-	return {
-		x1:e.clientX, y1:e.clientY,
-		x2: cursorTextPos.left, y2: cursorTextPos.top
+const initCursor = () => {
+
+	document.addEventListener("mousemove", e => {
+
+		clientX = e.clientX;
+		clientY = e.clientY;
+	});
+
+	const render = () => {
+
+		innerCursor.style.transform = "translate(${clientX}px, ${clientY}px)";
+
+		requestAnimationFrame(render);
+	};
+
+	requestAnimationFrame(render);
+};
+
+initCursor();
+
+const initCanvas = () => {
+
+	const canvas = document.querySelector(".cursor-canvas");
+	const shapeBounds = {
+
+		width: 75,
+		height: 75
+	};
+
+	paper.setup(canvas);
+
+	const strokeColor = "rgba(255, 0, 0, 255)";
+	const strokeWidth = 1;
+	const segments = 8;
+	const radius = 15;
+
+	const noiseScale = 150;
+	const noiseRange = 4;
+	var isNoisy = false;
+
+	const polygon = new paper.Path.RegularPolygon(
+
+		new paper.Point(0, 0),
+		segments,
+		radius
+	);
+
+	polygon.strokeColor = strokeColor;
+	polygon.strokeWidth = strokeWidth;
+	polygon.smooth();
+
+	group = new paper.Group([polygon]);
+	group.applyMatrix = false;
+
+	const noiseObjects = polygon.segments.map(() => new SimplexNoise());
+
+	var bigCoordinates = [];
+
+	const lerp = (a, b, n) => {
+
+		return (1 - n) * a + n * b;
+	};
+
+	const map = (value, in_min, in_max, out_min, out_max) => {
+
+		return (
+			((value - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min)
+	};
+
+	paper.view.onFrame = event => {
+
+		if (!isStuck) {
+
+			lastX = lerp(lastX, clientX, 0.2);
+			lastY = lerp(lastY, clientY, 0.2);
+
+			group.position = new paper.Point(lastX, lastY);	
+		
+		} else if (isStuck) {
+
+			lastX = lerp(lastX, stuckX, 0.2);
+			lastY = lerp(lastY, stuckY, 0.2);
+
+			group.position = new paper.Point(lastX, lastY);
+		}
+
+		if (isStuck && polygon.bounds.width < shapeBounds.width) {
+
+			polygon.scale(1.08);
+
+		} else if (!isStuck && polygon.bounds.width > 30) {
+
+			if (isNoisy) {
+
+				polygon.segments.forEach((segment, i) => {
+
+					segment.point.set(bigCoordinates[i][0], bigCoordinates[i][1]);
+				});
+
+				isNoisy = false;
+				bigCoordinates = [];
+			}
+
+			const scaleDown = 0.92;
+			polygon.scale(scaleDown);
+		}
+
+		if (isStuck && polygon.bounds.width >= shapeBounds.width) {
+
+			isNoisy = true;
+
+			if (bigCoordinates.length === 0) {
+
+				polygon.segments.forEach((segment, i) => {
+
+					bigCoordinates[i] = [segment.point.x, segment.point.y];
+				});
+			}
+
+			polygon.segments.forEach((segment, i) => {
+
+				const noiseX = noiseObjects[i].noise2D(event.count / noiseScale, 0);
+				const noiseY = noiseObjects[i].noise2D(event.count / noiseScale, 1);
+
+				const distortionX = map(noiseX, -1, 1, -noiseRange);
+				const distortionY = map(noiseY, -1, 1, -noiseRange);
+
+				const newX = bigCoordinates[i][0] + distortionX;
+				const newY = bigCoordinates[i][1] + distortionY;
+
+				segment.point.set(newX, newY);
+			});
+		}
+
+		polygon.smooth();
 	};
 }
 
-document.onmousemove = function(e) {
+initCanvas();
 
-	var PosCords = getPos(e);
-	// console.log("move MOUSE: " + PosCords.x1 + " |||| " + PosCords.y1 + "move ELEM: " + PosCords.x2 + " |||| " + PosCords.y2);
+$(document).ready(function() {
 
-	cursorText.animate({
-		left: PosCords.x1,
-		top: PosCords.y1
-	}, 0, "linear");
+	$("#menu-icon").on("click", function() {
 
-	if (PosCords.x1 >= 800 && PosCords.y1 <= 400) {
+		$("#menu-page").fadeIn(700);
+	});
 
-		cursorText.text("Next Project");
-	
-	} else if (PosCords.x1 <= 600 && PosCords.y1 <= 400) {
+	$("#menu-close-button img").on("click", function() {
 
-		cursorText.text("Previous Project");
-	
-	} else {
-
-		cursorText.text("Project 1");
-	}
-}
-
-$("#snippets-span").on("mouseenter", function() {
-
-	cursorText.text("snippets");
+		$("#menu-page").fadeOut(700);
+	});
 });
-
-$("#snippets-span").on("mouseleave", function() {
-
-	cursorText.text(cursorPlaceHolder);
-});
-
-$("#nav-cap-span").on("mouseenter", function() {
-
-	cursorText.text("menu");
-});
-
-$("#nav-cap-span").on("mouseleave", function() {
-
-	cursorText.text(cursorPlaceHolder);
-});
-
-document.onmousedown = function(e) {
-
-	var angle = 0;
-
-	var PosCords = getPos(e);
-
-	if (PosCords.x1 >= 800) {
-
-		if (projectsCounter == 0) {
-
-			$("#banner-image").animate({opacity: "0"}, 100).delay(100).queue(function(next) {
-				$(this).attr("src", "media/folder2/f2-img1.jpg"); next();
-			}).delay(100).animate({opacity: "1"}, 100);
-
-			cursorText.css({"color" : "#171E26"});
-
-			projectsCounter++;
-		
-		} else if (projectsCounter == 1) {
-
-				$("#banner-image").animate({opacity: "0"}, 100).delay(100).queue(function(next) {
-					$(this).attr("src", "media/folder3/f3-img1.jpg"); next();
-
-					if ($(this).attr("src") === "media/folder3/f3-img1.jpg") {
-
-						$("#banner-image").css({
-							
-							"webkitTransform" : "rotate(-90deg)",
-							"MozTransform" : "rotate(-90deg)",
-							"OTransform" : "rotate(-90deg)",
-							"transform" : "rotate(-90deg)"
-						});
-					}
-
-				}).delay(100).animate({opacity: "1"}, 100);
-
-			cursorText.css({"color" : "#171E26"});
-
-			projectsCounter++;
-		}
-	
-	} else if (PosCords.x1 <= 600) {
-
-		console.log("left");
-	}
-}
-

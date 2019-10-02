@@ -2,23 +2,64 @@
 
 <html>
 	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link rel = "stylesheet" type = "text/css" href = "assets/main.css" />
+
+		<meta charset="UTF-8">
+		<meta name="description" content="Adesignsm, Where design meets development. A web development portfolio by Akash Mulye">
+		<meta name="keywords" content="HTML,CSS,XML,JavaScript, THREE.js, JQuery, php, Node.js, Angular.js, AJAX">
+		<meta name="author" content="Akash Mulye">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-core.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	</head>
 
 	<body>
+		<script type = "text/javascript" src = "scripts/three.js"></script>
+		<script type = "text/javascript" src = "scripts/OrbitControls.js"></script>
+
+		<div class = "cursor cursor-small"></div>
+		<canvas class = "cursor cursor-canvas" resize></canvas>
+
 		<div id = "wrapper">
-			<p id = "cursor-text"> Project 1 </p>
+			<div id = "main-page-canvas">
+				<script type = "text/javascript" src = "scripts/main-canvas.js"></script>
+			</div>
 
-			<div id = "banner-container">
+			<div id = "header">
+				<div id = "contact-button"> <img id = "contact-icon" src = "icons/contact.png" /> </div>
+				<div id = "menu-button"> <img id = "menu-icon" src = "icons/menu.png" /> </div>
+			</div>
+
+			<div id = "main-page-container">
 				<div id = "image-container">
-					<img id = "banner-image" src = "media/folder1/f1-img1.png" />
+					<img id = "home-img-1" src = "media/main-page/1.png" />
+					<img id = "home-img-2" src = "media/main-page/2.png" />
+					<img id = "home-img-3" src = "media/main-page/3.png" />
 				</div>
-
-				<p> <span id = "nav-cap-span">home</span> - <span id = "snippets-span">snippets</span> </div>
 			</div>
 		</div>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<div id = "menu-page">
+			<div id = "menu-close-button">
+				<img src = "icons/close.png" />
+			</div>
+
+			<ul>
+				<li> <a href = "contact.html"> contact </a> </li>
+				<li> <a href = "booking.html"> bookings </a> </li>
+				<li> <a href = "shop.html"> shop </a> </li>
+				<li> <a href = "gallery.html"> gallery </a> </li>
+				<li> <a href = "index.html"> home </a> </li>
+			</ul>
+		</div>
+
+		<footer id = "footer">
+
+		</footer>
+
 		<script type = "text/javascript" src = "scripts/main.js"></script>
 	</body>
 </html>
