@@ -1,6 +1,6 @@
 <?php
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         $name = strip_tags(trim($_POST["name"]));
 		$name = str_replace(array("\r","\n"),array(" "," "),$name);
@@ -22,7 +22,7 @@
         $email_content .= "Email: $email\n\n";
         $email_content .= "Message:\n$message\n";
 
-//         $email_headers = "From: $name <$email>";
+        $email_headers = "From: $name <$email>";
 
         if (mail($recipient, $subject, $email_content, $email_headers)) {
 
